@@ -8,12 +8,15 @@ TITLE = "Platformer - Teste Tutor"
 # =====================
 class Hero:
     def __init__(self):
-        self.actor = Actor("hero_idle_0", (100, 100))
+        self.actor = Actor("hero_idle_0", (100, 350))
+
         self.speed = 4
 
         # Gravidade
-        self.vel_y = 0
-        self.gravity = 0.5
+        self.vy = 0
+        self.gravity = 0.6
+        self.jump_force = -12
+
         self.on_ground = False
 
     def move(self):
@@ -24,17 +27,20 @@ class Hero:
         if keyboard.right or keyboard.d:
             self.actor.x += self.speed
 
-        # Gravidade
-        self.vel_y += self.gravity
-        self.actor.y += self.vel_y
-
-        # Chão
-        if self.actor.bottom >= HEIGHT:
-            self.actor.bottom = HEIGHT
-            self.vel_y = 0
-            self.on_ground = True
-        else:
+        # PULO
+        if (keyboard.space or keyboard.w or keyboard.up) and self.on_ground:
+            self.vy = self.jump_force
             self.on_ground = False
+
+        # Gravidade
+        self.vy += self.gravity
+        self.actor.y += self.vy
+
+        # CHÃO
+        if self.actor.y >= 350:
+            self.actor.y = 350
+            self.vy = 0
+            self.on_ground = True
 
         # Limites laterais
         if self.actor.left < 0:
@@ -45,6 +51,7 @@ class Hero:
 
     def draw(self):
         self.actor.draw()
+
 
 
 # =====================
