@@ -17,8 +17,8 @@ class Hero:
 
         # Física
         self.vy = 0
-        self.gravity = 0.6
-        self.jump_force = -12
+        self.gravity = 0.5
+        self.jump_force = -14
 
         self.on_ground = False
 
@@ -39,15 +39,25 @@ class Hero:
         self.vy += self.gravity
         self.actor.y += self.vy
 
-        # Colisão com plataforma
-        if self.actor.colliderect(platform) and self.vy > 0:
+        # =====================
+        # Colisão com plataforma (SÓ POR CIMA)
+        # =====================
+        if (
+            self.vy > 0 and
+            self.actor.bottom >= platform.top and
+            self.actor.bottom - self.vy <= platform.top and
+            self.actor.right > platform.left and
+            self.actor.left < platform.right
+        ):
             self.actor.bottom = platform.top
             self.vy = 0
             self.on_ground = True
 
+        # =====================
         # Chão
-        if self.actor.y >= 350:
-            self.actor.y = 350
+        # =====================
+        if self.actor.bottom >= 350:
+            self.actor.bottom = 350
             self.vy = 0
             self.on_ground = True
 
