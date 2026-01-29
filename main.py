@@ -1,7 +1,10 @@
 WIDTH = 800
 HEIGHT = 450
-
 TITLE = "Platformer - Teste Tutor"
+
+from pygame import Rect
+
+platform = Rect(300, 300, 200, 20)
 
 # =====================
 # Classe do Herói
@@ -12,7 +15,7 @@ class Hero:
 
         self.speed = 4
 
-        # Gravidade
+        # Física
         self.vy = 0
         self.gravity = 0.6
         self.jump_force = -12
@@ -27,7 +30,7 @@ class Hero:
         if keyboard.right or keyboard.d:
             self.actor.x += self.speed
 
-        # PULO
+        # Pulo
         if (keyboard.space or keyboard.w or keyboard.up) and self.on_ground:
             self.vy = self.jump_force
             self.on_ground = False
@@ -36,7 +39,13 @@ class Hero:
         self.vy += self.gravity
         self.actor.y += self.vy
 
-        # CHÃO
+        # Colisão com plataforma
+        if self.actor.colliderect(platform) and self.vy > 0:
+            self.actor.bottom = platform.top
+            self.vy = 0
+            self.on_ground = True
+
+        # Chão
         if self.actor.y >= 350:
             self.actor.y = 350
             self.vy = 0
@@ -53,9 +62,8 @@ class Hero:
         self.actor.draw()
 
 
-
 # =====================
-# Instância do herói
+# Instância
 # =====================
 hero = Hero()
 
@@ -69,4 +77,5 @@ def update():
 
 def draw():
     screen.clear()
+    screen.draw.filled_rect(platform, (100, 100, 100))
     hero.draw()
